@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Trash2, Minus, Plus, IndianRupee, Printer, ChefHat, ArrowRight } from 'lucide-react';
+import PaymentModal from './PaymentModal';
 
 export interface CartItem {
     id: number;
@@ -12,6 +14,8 @@ export interface CartItem {
 interface PosRightSidebarProps {
     cart: CartItem[];
     updateQuantity: (id: number, delta: number) => void;
+    clearCart: () => void;
+    confirmClearCart: () => void;
     subtotal: number;
     tax: number;
     total: number;
@@ -20,10 +24,14 @@ interface PosRightSidebarProps {
 export default function PosRightSidebar({
     cart,
     updateQuantity,
+    clearCart,
+    confirmClearCart,
     subtotal,
     tax,
     total
 }: PosRightSidebarProps) {
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
     return (
         <aside className="w-[380px] bg-white border-l border-gray-100 flex flex-col z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.01)] flex-shrink-0">
             <div className="px-6 py-6 flex items-start justify-between border-b border-gray-50/50">
@@ -31,7 +39,11 @@ export default function PosRightSidebar({
                     <h2 className="text-[20px] font-extrabold text-gray-900 mb-1">Order #1023</h2>
                     <p className="text-[13px] text-gray-400 font-semibold">Table 12 &bull; 4 Guests</p>
                 </div>
-                <button className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors bg-gray-50 mt-0.5">
+                <button
+                    onClick={clearCart}
+                    title="Clear Cart"
+                    className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors bg-gray-50 mt-0.5"
+                >
                     <Trash2 size={16} />
                 </button>
             </div>
@@ -84,26 +96,52 @@ export default function PosRightSidebar({
                 </div>
 
                 <div className="flex gap-3 mb-3">
-                    <button className="flex-1 flex items-center justify-center gap-2 py-3 px-3 bg-white border border-gray-200 hover:border-gray-300 text-gray-800 font-bold rounded-xl shadow-sm transition-all">
+                    <button
+                        disabled={cart.length === 0}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 bg-white border font-bold rounded-xl shadow-sm transition-all ${cart.length > 0
+                                ? 'border-gray-200 hover:border-gray-300 text-gray-800'
+                                : 'border-gray-100 text-gray-300 cursor-not-allowed'
+                            }`}
+                    >
                         <Printer size={16} strokeWidth={2.5} />
                         <span className="text-[14px]">Print Bill</span>
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 py-3 px-3 bg-white border border-gray-200 hover:border-gray-300 text-gray-800 font-bold rounded-xl shadow-sm transition-all">
+                    <button
+                        disabled={cart.length === 0}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 bg-white border font-bold rounded-xl shadow-sm transition-all ${cart.length > 0
+                                ? 'border-gray-200 hover:border-gray-300 text-gray-800'
+                                : 'border-gray-100 text-gray-300 cursor-not-allowed'
+                            }`}
+                    >
                         <ChefHat size={16} strokeWidth={2.5} />
                         <span className="text-[14px]">Kitchen</span>
                     </button>
                 </div>
 
                 <button
-                    className="w-full flex items-center justify-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-3 rounded-xl shadow-[0_8px_20px_-6px_rgba(249,115,22,0.4)] transition-all active:scale-[0.98] mt-2 h-[48px]"
+                    disabled={cart.length === 0}
+                    className={`w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all h-[48px] mt-2 ${cart.length > 0
+                        ? 'bg-[#f97316] hover:bg-[#ea580c] text-white shadow-[0_8px_20px_-6px_rgba(249,115,22,0.4)] active:scale-[0.98]'
+                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        }`}
                     onClick={() => {
-                        alert('Payment Processing...');
+                        setIsPaymentModalOpen(true);
                     }}
                 >
                     <span className="text-[15px]">Pay Now</span>
                     <ArrowRight size={18} strokeWidth={2.5} />
                 </button>
             </div>
+
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                onSuccess={() => {
+                    confirmClearCart();
+                    setIsPaymentModalOpen(false);
+                }}
+                total={total}
+            />
         </aside>
     );
 }

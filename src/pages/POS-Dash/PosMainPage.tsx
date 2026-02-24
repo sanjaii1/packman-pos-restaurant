@@ -3,11 +3,13 @@ import { CATEGORIES, PRODUCTS } from '../../data/posData';
 import PosLeftSidebar from './components/PosLeftSidebar';
 import PosMainContent from './components/PosMainContent';
 import PosRightSidebar, { type CartItem } from './components/PosRightSidebar';
+import ClearCartModal from './components/ClearCartModal';
 
 export default function PosMainPage() {
     const [activeCategory, setActiveCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [cart, setCart] = useState<CartItem[]>([]);
+    const [isClearCartModalOpen, setIsClearCartModalOpen] = useState(false);
 
     const activeCatData = CATEGORIES.find(c => c.id === activeCategory);
 
@@ -33,16 +35,25 @@ export default function PosMainPage() {
         setCart((prev) =>
             prev.map((item) => {
                 if (item.id === id) {
-                    const newQuantity = item.quantity + delta;
-                    return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
+                    return { ...item, quantity: item.quantity + delta };
                 }
                 return item;
-            })
+            }).filter(item => item.quantity > 0)
         );
     };
 
     const removeFromCart = (id: number) => {
         setCart((prev) => prev.filter((item) => item.id !== id));
+    };
+
+    const clearCart = () => {
+        if (cart.length === 0) return;
+        setIsClearCartModalOpen(true);
+    };
+
+    const confirmClearCart = () => {
+        setCart([]);
+        setIsClearCartModalOpen(false);
     };
 
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -51,13 +62,11 @@ export default function PosMainPage() {
 
     return (
         <div className="flex h-screen bg-[#f8f9fa] overflow-hidden font-sans text-gray-800">
-            {/* LEFT SIDEBAR: Navigation */}
             <PosLeftSidebar
                 activeCategory={activeCategory}
                 setActiveCategory={setActiveCategory}
             />
 
-            {/* CENTER: Main Content */}
             <PosMainContent
                 activeCategory={activeCategory}
                 activeCatData={activeCatData}
@@ -67,14 +76,22 @@ export default function PosMainPage() {
                 addToCart={addToCart}
             />
 
-            {/* RIGHT SIDEBAR: Order Info */}
             <PosRightSidebar
                 cart={cart}
                 updateQuantity={updateQuantity}
+                clearCart={clearCart}
+                confirmClearCart={confirmClearCart}
                 subtotal={subtotal}
                 tax={tax}
                 total={total}
             />
+
+            <ClearCartModal
+                isOpen={isClearCartModalOpen}
+                onClose={() => setIsClearCartModalOpen(false)}
+                onConfirm={confirmClearCart}
+            />
         </div>
     );
 }
+
