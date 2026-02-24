@@ -42,10 +42,6 @@ export default function PosMainPage() {
         );
     };
 
-    const removeFromCart = (id: number) => {
-        setCart((prev) => prev.filter((item) => item.id !== id));
-    };
-
     const clearCart = () => {
         if (cart.length === 0) return;
         setIsClearCartModalOpen(true);
