@@ -192,8 +192,8 @@ export default function PosRightSidebar({
                 {/* Mobile Footer View */}
                 <div className="lg:hidden flex flex-col bg-white">
                     {/* Expanded Cart View */}
-                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isMobileCartOpen ? 'max-h-[60vh] opacity-100 border-b border-gray-100' : 'max-h-0 opacity-0'}`}>
-                        <div className="p-4 flex justify-between items-center border-b border-gray-50/50">
+                    <div className={`flex flex-col overflow-hidden transition-all duration-300 ease-in-out bg-[#fafafa] ${isMobileCartOpen ? 'max-h-[75vh] opacity-100 border-b border-gray-100' : 'max-h-0 opacity-0'}`}>
+                        <div className="p-4 flex justify-between items-center border-b border-gray-100/80 bg-white">
                             <h2 className="text-[18px] font-extrabold text-gray-900">Your Order</h2>
                             <button
                                 onClick={clearCart}
@@ -202,7 +202,7 @@ export default function PosRightSidebar({
                                 <Trash2 size={16} />
                             </button>
                         </div>
-                        <div className="overflow-y-auto max-h-[calc(60vh-65px)] px-4 py-4 space-y-4 no-scrollbar">
+                        <div className="overflow-y-auto flex-1 max-h-[calc(75vh-65px)] p-4 space-y-4 no-scrollbar bg-white">
                             {cart.map((item) => (
                                 <div key={item.id} className="flex items-start gap-3">
                                     <img src={item.image} alt={item.name} className="w-[56px] h-[56px] rounded-xl object-cover bg-gray-50 border border-gray-100/50 flex-shrink-0" />
@@ -230,6 +230,53 @@ export default function PosRightSidebar({
                                     </div>
                                 </div>
                             ))}
+
+                            {cart.length > 0 && (
+                                <div className="mt-4 pt-4 border-t border-gray-100">
+                                    <div className="space-y-2 mb-4">
+                                        <div className="flex justify-between text-[13px]">
+                                            <span className="text-gray-500 font-semibold">Subtotal</span>
+                                            <span className="font-bold text-gray-700 flex items-center"><IndianRupee size={12} />{subtotal.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-[13px]">
+                                            <span className="text-gray-500 font-semibold">Tax (8%)</span>
+                                            <span className="font-bold text-gray-700 flex items-center"><IndianRupee size={12} />{tax.toFixed(2)}</span>
+                                        </div>
+                                        {discountValue > 0 && (
+                                            <div className="flex justify-between text-[13px]">
+                                                <span className="text-green-600 font-semibold">Discount {discountType === 'percent' ? `(${discountValue}%)` : ''}</span>
+                                                <span className="font-bold text-green-600 flex items-center">- <IndianRupee size={12} />{discountAmount.toFixed(2)}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => window.print()}
+                                            disabled={cart.length === 0}
+                                            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2 bg-white border font-bold rounded-xl shadow-sm transition-all ${cart.length > 0 ? 'border-gray-200 hover:border-gray-300 text-gray-800' : 'border-gray-100 text-gray-300 cursor-not-allowed'}`}
+                                        >
+                                            <Printer size={18} strokeWidth={2.5} />
+                                            <span className="text-[12px] whitespace-nowrap">Print</span>
+                                        </button>
+                                        <button
+                                            onClick={() => { setIsMobileCartOpen(false); setIsSplitBillOpen(true); }}
+                                            disabled={cart.length === 0}
+                                            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2 bg-white border font-bold rounded-xl shadow-sm transition-all ${cart.length > 0 ? 'border-gray-200 hover:border-gray-300 text-gray-800' : 'border-gray-100 text-gray-300 cursor-not-allowed'}`}
+                                        >
+                                            <Split size={18} strokeWidth={2.5} />
+                                            <span className="text-[12px] whitespace-nowrap">Split</span>
+                                        </button>
+                                        <button
+                                            onClick={() => { setIsMobileCartOpen(false); setIsDiscountOpen(true); }}
+                                            disabled={cart.length === 0}
+                                            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2 bg-white border font-bold rounded-xl shadow-sm transition-all ${cart.length > 0 ? 'border-gray-200 hover:border-gray-300 text-gray-800' : 'border-gray-100 text-gray-300 cursor-not-allowed'}`}
+                                        >
+                                            <Percent size={18} strokeWidth={2.5} />
+                                            <span className="text-[12px] whitespace-nowrap">Discount</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
