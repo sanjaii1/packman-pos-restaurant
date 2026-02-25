@@ -41,7 +41,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                     <div className="flex-1 min-w-0">
                         <button
                             onClick={() => { setIsServerDropdownOpen(!isServerDropdownOpen); setIsTableDropdownOpen(false); }}
-                            className="flex items-center gap-2 group w-full outline-none"
+                            className="flex items-center gap-2 group w-full outline-none cursor-pointer"
                         >
                             <h3 className="font-bold text-[16px] leading-tight text-gray-900 truncate group-hover:text-[#ea580c] transition-colors">{selectedServer.name}</h3>
                             <ChevronDown size={14} className={`text-gray-400 transition-transform ${isServerDropdownOpen ? 'rotate-180' : ''}`} />
@@ -51,7 +51,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                             <span className="text-gray-400 font-medium">{selectedServer.role} &bull;</span>
                             <button
                                 onClick={() => { setIsTableDropdownOpen(!isTableDropdownOpen); setIsServerDropdownOpen(false); }}
-                                className="ml-1 flex items-center gap-1 text-[#ea580c] font-bold hover:bg-[#fff1e7] px-1.5 py-0.5 rounded-md transition-colors -my-0.5 outline-none"
+                                className="ml-1 flex items-center gap-1 text-[#ea580c] font-bold hover:bg-[#fff1e7] px-1.5 py-0.5 rounded-md transition-colors -my-0.5 outline-none cursor-pointer"
                             >
                                 {selectedTable}
                                 <ChevronDown size={12} className={`transition-transform ${isTableDropdownOpen ? 'rotate-180' : ''}`} />
@@ -70,7 +70,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                                     setSelectedServer(server);
                                     setIsServerDropdownOpen(false);
                                 }}
-                                className={`w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors outline-none ${selectedServer.id === server.id ? 'bg-[#fff1e7]' : ''
+                                className={`w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors outline-none cursor-pointer ${selectedServer.id === server.id ? 'bg-[#fff1e7]' : ''
                                     }`}
                             >
                                 <img
@@ -100,7 +100,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                                         setSelectedTable(table);
                                         setIsTableDropdownOpen(false);
                                     }}
-                                    className={`py-2 px-1 text-sm font-semibold rounded-lg transition-colors outline-none ${selectedTable === table
+                                    className={`py-2 px-1 text-sm font-semibold rounded-lg transition-colors outline-none cursor-pointer ${selectedTable === table
                                             ? 'bg-[#ea580c] text-white'
                                             : 'bg-gray-50 text-gray-700 hover:bg-gray-200'
                                         }`}
@@ -122,7 +122,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                         <button
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
-                            className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 ${isActive
+                            className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 cursor-pointer ${isActive
                                 ? 'bg-[#fff1e7] text-[#ea580c] font-bold'
                                 : 'text-gray-500 hover:bg-gray-50 font-medium hover:text-gray-700'
                                 }`}
@@ -138,7 +138,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
             <div className="p-6">
                 <button
                     onClick={() => navigate('/login')}
-                    className="w-full flex items-center justify-center gap-2 py-4 px-4 bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold rounded-2xl transition-colors border border-gray-100"
+                    className="w-full flex items-center justify-center gap-2 py-4 px-4 bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold rounded-2xl transition-colors border border-gray-100 cursor-pointer"
                 >
                     <LogOut size={18} className="text-gray-600" />
                     <span className="text-[15px]">Log Out</span>
