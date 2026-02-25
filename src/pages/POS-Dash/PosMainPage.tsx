@@ -65,6 +65,7 @@ export default function PosMainPage() {
 
             <PosMainContent
                 activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
                 activeCatData={activeCatData}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}

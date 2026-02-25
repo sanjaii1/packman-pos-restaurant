@@ -1,5 +1,5 @@
-import { Search, SlidersHorizontal, IndianRupee, Check } from 'lucide-react';
-import { PRODUCTS } from '../../../data/posData';
+import { Search, SlidersHorizontal, IndianRupee, Check, Bell } from 'lucide-react';
+import { PRODUCTS, CATEGORIES } from '../../../data/posData';
 import { useState, useRef, useEffect } from 'react';
 
 interface CategoryData {
@@ -10,6 +10,7 @@ interface CategoryData {
 
 interface PosMainContentProps {
     activeCategory: string;
+    setActiveCategory: (id: string) => void;
     activeCatData: CategoryData | undefined;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
@@ -19,6 +20,7 @@ interface PosMainContentProps {
 
 export default function PosMainContent({
     activeCategory,
+    setActiveCategory,
     activeCatData,
     searchQuery,
     setSearchQuery,
@@ -58,8 +60,8 @@ export default function PosMainContent({
     });
 
     return (
-        <main className="flex-1 flex flex-col min-w-0 bg-[#f8f9fa]">
-            <header className="px-6 py-4 flex items-center justify-between border-b border-gray-100/50 bg-[#f8f9fa]/80 backdrop-blur-md sticky top-0 z-10 hidden md:flex">
+        <main className="flex-1 flex flex-col min-w-0 bg-[#f8f9fa] h-full relative">
+            <header className="px-6 py-4 items-center justify-between border-b border-gray-100/50 bg-[#f8f9fa]/80 backdrop-blur-md sticky top-0 z-10 hidden md:flex">
                 <div>
                     <h1 className="text-[24px] font-extrabold text-gray-900 tracking-tight leading-none mb-1">{activeCategory === 'all' ? 'All Items' : activeCatData?.name}</h1>
                     <p className="text-[13px] text-[#b08968] font-semibold">Discover {filteredProducts.length} delicious dishes</p>
@@ -106,8 +108,67 @@ export default function PosMainContent({
                 </div>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-8 pt-6 no-scrollbar">
-                <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+            {/* Mobile Header */}
+            <header className="md:hidden px-4 pt-4 pb-2 bg-white rounded-b-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] z-10 sticky top-0 flex-shrink-0">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-sm bg-gray-50 border border-gray-100" />
+                        <div>
+                            <h3 className="font-bold text-[15px] text-gray-900 leading-tight w-full max-w-[150px] truncate">Sarah J.</h3>
+                            <p className="text-[12px] text-gray-500 font-medium tracking-wide">Table 12 &bull; 4 Guests</p>
+                        </div>
+                    </div>
+                    <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 relative">
+                        <Bell size={18} className="text-gray-600" />
+                        <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    </button>
+                </div>
+
+                <div className="mb-4">
+                    <h1 className="text-[22px] font-extrabold text-gray-900 tracking-tight mb-1">{activeCategory === 'all' ? 'All Items' : activeCatData?.name}</h1>
+                    <p className="text-[13px] text-[#b08968] font-medium">Discover {filteredProducts.length} delicious dishes</p>
+                </div>
+
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="relative flex-1 bg-[#f8f9fa] rounded-xl flex items-center p-1 border border-transparent focus-within:border-[#f97316]/30 focus-within:ring-2 focus-within:ring-[#f97316]/20 transition-all">
+                        <div className="pl-3 flex items-center pointer-events-none">
+                            <Search size={16} className="text-gray-400" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search menu..."
+                            className="w-full pl-2 pr-4 py-2.5 bg-transparent border-0 focus:outline-none text-[14px] placeholder:text-gray-400 font-medium text-gray-900"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <button
+                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        className="h-[44px] w-[44px] bg-[#fff1e7] text-[#ea580c] rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 transition-transform active:scale-95"
+                    >
+                        <SlidersHorizontal size={18} strokeWidth={2.5} />
+                    </button>
+                </div>
+
+                <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4">
+                    {CATEGORIES.map(cat => {
+                        const isActive = activeCategory === cat.id;
+                        return (
+                            <button
+                                key={cat.id}
+                                onClick={() => setActiveCategory(cat.id)}
+                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all border ${isActive ? 'bg-[#f97316] border-[#f97316] text-white font-bold shadow-[0_4px_12px_-4px_rgba(249,115,22,0.4)]' : 'bg-white border-gray-100 text-gray-600 font-semibold shadow-sm hover:bg-gray-50'}`}
+                            >
+                                <cat.icon size={16} className={isActive ? "text-white" : "text-gray-400"} />
+                                <span className="text-[13.5px]">{cat.name}</span>
+                            </button>
+                        )
+                    })}
+                </div>
+            </header>
+
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 pt-4 md:pt-6 no-scrollbar pb-[100px] lg:pb-8">
+                <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6">
                     {displayProducts.map((product) => (
                         <div
                             key={product.id}

@@ -11,7 +11,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
     const navigate = useNavigate();
 
     return (
-        <aside className="w-[280px] bg-white border-r border-gray-100 flex flex-col z-10 flex-shrink-0">
+        <aside className="w-[280px] bg-white border-r border-gray-100 hidden md:flex flex-col z-10 flex-shrink-0">
             {/* User Profile Info */}
             <div className="p-8 pb-4 flex items-center gap-4">
                 <img
