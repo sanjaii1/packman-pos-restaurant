@@ -1,6 +1,14 @@
-import { Search, SlidersHorizontal, IndianRupee, Check, Bell } from 'lucide-react';
+import { Search, SlidersHorizontal, IndianRupee, Check, Bell, ChevronDown } from 'lucide-react';
 import { PRODUCTS, CATEGORIES } from '../../../data/posData';
 import { useState, useRef, useEffect } from 'react';
+
+const SERVERS = [
+    { id: 1, name: 'Sarah J.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80' },
+    { id: 2, name: 'Michael T.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80' },
+    { id: 3, name: 'Emma W.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80' },
+];
+
+const TABLES = ['T-01', 'T-02', 'T-03', 'T-04', 'T-05', 'T-06', 'T-07', 'T-08', 'T-09', 'T-10', 'T-11', 'T-12'];
 
 interface CategoryData {
     id: string;
@@ -29,6 +37,10 @@ export default function PosMainContent({
 }: PosMainContentProps) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [sortBy, setSortBy] = useState('default');
+    const [isServerDropdownOpen, setIsServerDropdownOpen] = useState(false);
+    const [isTableDropdownOpen, setIsTableDropdownOpen] = useState(false);
+    const [selectedServer, setSelectedServer] = useState(SERVERS[0]);
+    const [selectedTable, setSelectedTable] = useState('Table 12');
     const filterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -111,12 +123,86 @@ export default function PosMainContent({
             {/* Mobile Header */}
             <header className="md:hidden px-4 pt-4 pb-2 bg-white rounded-b-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] z-10 sticky top-0 flex-shrink-0">
                 <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-sm bg-gray-50 border border-gray-100" />
-                        <div>
-                            <h3 className="font-bold text-[15px] text-gray-900 leading-tight w-full max-w-[150px] truncate">Sarah J.</h3>
-                            <p className="text-[12px] text-gray-500 font-medium tracking-wide">Table 12 &bull; 4 Guests</p>
+                    <div className="relative z-30">
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => { setIsServerDropdownOpen(!isServerDropdownOpen); setIsTableDropdownOpen(false); }}
+                                className="flex-shrink-0 relative group outline-none"
+                            >
+                                <img src={selectedServer.avatar} alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-sm bg-gray-50 border border-gray-100 group-hover:border-gray-300 transition-colors" />
+                            </button>
+                            <div className="flex-1 min-w-0">
+                                <button
+                                    onClick={() => { setIsServerDropdownOpen(!isServerDropdownOpen); setIsTableDropdownOpen(false); }}
+                                    className="flex items-center gap-1 group w-full max-w-[150px] outline-none"
+                                >
+                                    <h3 className="font-bold text-[15px] text-gray-900 leading-tight truncate group-hover:text-[#ea580c] transition-colors">{selectedServer.name}</h3>
+                                    <ChevronDown size={14} className={`text-gray-400 transition-transform ${isServerDropdownOpen ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                <div className="flex items-center text-[12px] mt-0.5">
+                                    <button
+                                        onClick={() => { setIsTableDropdownOpen(!isTableDropdownOpen); setIsServerDropdownOpen(false); }}
+                                        className="flex items-center gap-1 text-[#ea580c] font-bold hover:bg-[#fff1e7] pr-1 py-0.5 rounded-md transition-colors -my-0.5 outline-none tracking-wide"
+                                    >
+                                        {selectedTable}
+                                        <ChevronDown size={12} className={`transition-transform ${isTableDropdownOpen ? 'rotate-180' : ''}`} />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+                        {/* Server Dropdown */}
+                        {isServerDropdownOpen && (
+                            <div className="absolute top-full left-0 w-[220px] mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20">
+                                {SERVERS.map((server) => (
+                                    <button
+                                        key={server.id}
+                                        onClick={() => {
+                                            setSelectedServer(server);
+                                            setIsServerDropdownOpen(false);
+                                        }}
+                                        className={`w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors outline-none ${selectedServer.id === server.id ? 'bg-[#fff1e7]' : ''
+                                            }`}
+                                    >
+                                        <img
+                                            src={server.avatar}
+                                            alt={server.name}
+                                            className="w-8 h-8 rounded-full object-cover"
+                                        />
+                                        <div className="text-left flex-1">
+                                            <p className={`text-sm font-semibold ${selectedServer.id === server.id ? 'text-[#ea580c]' : 'text-gray-900'}`}>
+                                                {server.name}
+                                            </p>
+                                            <p className="text-xs text-gray-500">{server.role}</p>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Table Dropdown */}
+                        {isTableDropdownOpen && (
+                            <div className="absolute top-full left-0 w-[240px] mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-48 overflow-y-auto">
+                                <div className="grid grid-cols-3 gap-1 p-2">
+                                    {TABLES.map((table) => (
+                                        <button
+                                            key={table}
+                                            onClick={() => {
+                                                setSelectedTable(`Table ${table.slice(2)}`);
+                                                setIsTableDropdownOpen(false);
+                                            }}
+                                            className={`py-2 px-1 text-sm font-semibold rounded-lg transition-colors outline-none ${selectedTable === `Table ${table.slice(2)}`
+                                                ? 'bg-[#ea580c] text-white'
+                                                : 'bg-gray-50 text-gray-700 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            {table}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 relative">
                         <Bell size={18} className="text-gray-600" />

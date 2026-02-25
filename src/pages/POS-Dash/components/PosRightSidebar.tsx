@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Trash2, Minus, Plus, IndianRupee, Printer, ChefHat, ArrowRight } from 'lucide-react';
+import { Trash2, Minus, Plus, IndianRupee, Printer, ChefHat, ArrowRight, ChevronUp } from 'lucide-react';
 import PaymentModal from './PaymentModal';
 
 export interface CartItem {
@@ -31,9 +31,13 @@ export default function PosRightSidebar({
     total
 }: PosRightSidebarProps) {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
 
     return (
-        <aside className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.06)] lg:relative lg:w-[380px] lg:border-t-0 lg:border-l lg:border-gray-100 lg:shadow-[-10px_0_30px_rgba(0,0,0,0.01)] lg:flex-shrink-0 lg:h-full lg:z-10">
+        <aside className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.06)] lg:relative lg:w-[380px] lg:border-t-0 lg:border-l lg:border-gray-100 lg:shadow-[-10px_0_30px_rgba(0,0,0,0.01)] lg:flex-shrink-0 lg:h-full lg:z-10 transition-all duration-300 ease-in-out transform ${cart.length === 0
+            ? 'translate-y-[100%] lg:translate-y-0 lg:-mr-[380px] opacity-0 pointer-events-none'
+            : 'translate-y-0 lg:mr-0 opacity-100 pointer-events-auto'
+            }`}>
 
             {/* Desktop View */}
             <div className="hidden lg:flex flex-col h-full w-full">
@@ -138,27 +142,70 @@ export default function PosRightSidebar({
             </div>
 
             {/* Mobile Footer View */}
-            <div className="lg:hidden flex items-center justify-between px-4 py-4 bg-white">
-                <div className="flex flex-col">
-                    <span className="text-[13px] font-bold text-gray-500 mb-0.5">Total ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
-                    <div className="flex items-center gap-1.5 text-gray-900">
-                        <span className="text-[20px] font-black flex items-center tracking-tight"><IndianRupee size={18} strokeWidth={2.5} />{total.toFixed(2)}</span>
-                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" className="text-gray-400 mt-1">
-                            <path d="M1 5L5 1L9 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+            <div className="lg:hidden flex flex-col bg-white">
+                {/* Expanded Cart View */}
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isMobileCartOpen ? 'max-h-[60vh] opacity-100 border-b border-gray-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="p-4 flex justify-between items-center border-b border-gray-50/50">
+                        <h2 className="text-[18px] font-extrabold text-gray-900">Your Order</h2>
+                        <button
+                            onClick={clearCart}
+                            className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors bg-gray-50"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    </div>
+                    <div className="overflow-y-auto max-h-[calc(60vh-65px)] px-4 py-4 space-y-4 no-scrollbar">
+                        {cart.map((item) => (
+                            <div key={item.id} className="flex items-start gap-3">
+                                <img src={item.image} alt={item.name} className="w-[56px] h-[56px] rounded-xl object-cover bg-gray-50 border border-gray-100/50 flex-shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-start mb-0.5">
+                                        <h4 className="font-bold text-[14px] text-gray-900 leading-tight truncate pr-2">{item.name}</h4>
+                                        <span className="font-black text-[13px] text-gray-900 whitespace-nowrap flex items-center"><IndianRupee size={12} />{(item.price * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                    <p className="text-[12px] text-gray-400 font-medium mb-2 truncate">{item.desc}</p>
+                                    <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1 w-fit shadow-sm">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, -1); }}
+                                            className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-gray-50 text-gray-500"
+                                        >
+                                            <Minus size={12} strokeWidth={3} />
+                                        </button>
+                                        <span className="w-4 text-center font-bold text-[12px] text-gray-900">{item.quantity}</span>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, 1); }}
+                                            className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-gray-50 text-gray-500"
+                                        >
+                                            <Plus size={12} strokeWidth={3} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <button
-                    disabled={cart.length === 0}
-                    className={`flex items-center justify-center gap-2 font-bold px-8 py-3.5 rounded-xl transition-all ${cart.length > 0
-                        ? 'bg-[#f97316] hover:bg-[#ea580c] text-white shadow-[0_8px_20px_-6px_rgba(249,115,22,0.4)] active:scale-[0.98]'
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        }`}
-                    onClick={() => setIsPaymentModalOpen(true)}
-                >
-                    <span className="text-[15px]">Pay Now</span>
-                    <ArrowRight size={18} strokeWidth={2.5} />
-                </button>
+
+                {/* Bottom Bar */}
+                <div className="flex items-center justify-between px-4 py-4 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] relative z-10">
+                    <div className="flex flex-col cursor-pointer bg-white/50 p-1 -m-1 rounded-lg" onClick={() => setIsMobileCartOpen(!isMobileCartOpen)}>
+                        <span className="text-[13px] font-bold text-gray-500 mb-0.5">Total ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
+                        <div className="flex items-center gap-1.5 text-gray-900">
+                            <span className="text-[20px] font-black flex items-center tracking-tight"><IndianRupee size={18} strokeWidth={2.5} />{total.toFixed(2)}</span>
+                            <ChevronUp size={16} strokeWidth={2.5} className={`text-gray-400 mt-0.5 transition-transform duration-300 ${isMobileCartOpen ? 'rotate-180' : ''}`} />
+                        </div>
+                    </div>
+                    <button
+                        disabled={cart.length === 0}
+                        className={`flex items-center justify-center gap-2 font-bold px-8 py-3.5 rounded-xl transition-all ${cart.length > 0
+                            ? 'bg-[#f97316] hover:bg-[#ea580c] text-white shadow-[0_8px_20px_-6px_rgba(249,115,22,0.4)] active:scale-[0.98]'
+                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            }`}
+                        onClick={() => setIsPaymentModalOpen(true)}
+                    >
+                        <span className="text-[15px]">Pay Now</span>
+                        <ArrowRight size={18} strokeWidth={2.5} />
+                    </button>
+                </div>
             </div>
 
             <PaymentModal

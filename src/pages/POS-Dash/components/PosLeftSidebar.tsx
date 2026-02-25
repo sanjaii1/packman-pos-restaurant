@@ -1,4 +1,5 @@
-import { LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { LogOut, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES } from '../../../data/posData';
 
@@ -7,22 +8,109 @@ interface PosLeftSidebarProps {
     setActiveCategory: (id: string) => void;
 }
 
+const SERVERS = [
+    { id: 1, name: 'Sarah J.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80' },
+    { id: 2, name: 'Michael T.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80' },
+    { id: 3, name: 'Emma W.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80' },
+];
+
+const TABLES = ['T-01', 'T-02', 'T-03', 'T-04', 'T-05', 'T-06', 'T-07', 'T-08', 'T-09', 'T-10', 'T-11', 'T-12'];
+
 export default function PosLeftSidebar({ activeCategory, setActiveCategory }: PosLeftSidebarProps) {
     const navigate = useNavigate();
+    const [isServerDropdownOpen, setIsServerDropdownOpen] = useState(false);
+    const [isTableDropdownOpen, setIsTableDropdownOpen] = useState(false);
+    const [selectedServer, setSelectedServer] = useState(SERVERS[0]);
+    const [selectedTable, setSelectedTable] = useState('T-12');
 
     return (
         <aside className="w-[280px] bg-white border-r border-gray-100 hidden md:flex flex-col z-10 flex-shrink-0">
             {/* User Profile Info */}
-            <div className="p-8 pb-4 flex items-center gap-4">
-                <img
-                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80"
-                    alt="Profile"
-                    className="w-12 h-12 rounded-full object-cover shadow-sm bg-gray-100 p-0.5 border border-gray-100"
-                />
-                <div>
-                    <h3 className="font-bold text-[16px] leading-tight text-gray-900">Sarah J.</h3>
-                    <p className="text-[13px] text-gray-400 font-medium">Server &bull; T-12</p>
+            <div className="relative p-8 pb-4">
+                <div className="flex items-center gap-4 w-full text-left p-2 -m-2">
+                    <button
+                        onClick={() => { setIsServerDropdownOpen(!isServerDropdownOpen); setIsTableDropdownOpen(false); }}
+                        className="flex-shrink-0 relative group outline-none"
+                    >
+                        <img
+                            src={selectedServer.avatar}
+                            alt="Profile"
+                            className="w-12 h-12 rounded-full object-cover shadow-sm bg-gray-100 p-0.5 border border-gray-100 group-hover:border-gray-300 transition-colors"
+                        />
+                    </button>
+                    <div className="flex-1 min-w-0">
+                        <button
+                            onClick={() => { setIsServerDropdownOpen(!isServerDropdownOpen); setIsTableDropdownOpen(false); }}
+                            className="flex items-center gap-2 group w-full outline-none"
+                        >
+                            <h3 className="font-bold text-[16px] leading-tight text-gray-900 truncate group-hover:text-[#ea580c] transition-colors">{selectedServer.name}</h3>
+                            <ChevronDown size={14} className={`text-gray-400 transition-transform ${isServerDropdownOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        <div className="flex items-center text-[13px] mt-0.5">
+                            <span className="text-gray-400 font-medium">{selectedServer.role} &bull;</span>
+                            <button
+                                onClick={() => { setIsTableDropdownOpen(!isTableDropdownOpen); setIsServerDropdownOpen(false); }}
+                                className="ml-1 flex items-center gap-1 text-[#ea580c] font-bold hover:bg-[#fff1e7] px-1.5 py-0.5 rounded-md transition-colors -my-0.5 outline-none"
+                            >
+                                {selectedTable}
+                                <ChevronDown size={12} className={`transition-transform ${isTableDropdownOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
+                {/* Server Dropdown */}
+                {isServerDropdownOpen && (
+                    <div className="absolute top-full left-8 right-8 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20">
+                        {SERVERS.map((server) => (
+                            <button
+                                key={server.id}
+                                onClick={() => {
+                                    setSelectedServer(server);
+                                    setIsServerDropdownOpen(false);
+                                }}
+                                className={`w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors outline-none ${selectedServer.id === server.id ? 'bg-[#fff1e7]' : ''
+                                    }`}
+                            >
+                                <img
+                                    src={server.avatar}
+                                    alt={server.name}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                />
+                                <div className="text-left flex-1">
+                                    <p className={`text-sm font-semibold ${selectedServer.id === server.id ? 'text-[#ea580c]' : 'text-gray-900'}`}>
+                                        {server.name}
+                                    </p>
+                                    <p className="text-xs text-gray-500">{server.role}</p>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Table Dropdown */}
+                {isTableDropdownOpen && (
+                    <div className="absolute top-full left-8 right-8 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-48 overflow-y-auto">
+                        <div className="grid grid-cols-3 gap-1 p-2">
+                            {TABLES.map((table) => (
+                                <button
+                                    key={table}
+                                    onClick={() => {
+                                        setSelectedTable(table);
+                                        setIsTableDropdownOpen(false);
+                                    }}
+                                    className={`py-2 px-1 text-sm font-semibold rounded-lg transition-colors outline-none ${selectedTable === table
+                                            ? 'bg-[#ea580c] text-white'
+                                            : 'bg-gray-50 text-gray-700 hover:bg-gray-200'
+                                        }`}
+                                >
+                                    {table}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Navigation Menu */}
