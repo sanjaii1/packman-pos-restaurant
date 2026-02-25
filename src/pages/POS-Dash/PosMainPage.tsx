@@ -53,7 +53,7 @@ export default function PosMainPage() {
     };
 
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const tax = subtotal * 0.08; // 8% tax
+    const tax = subtotal * 0.08;
     const total = subtotal + tax;
 
     return (

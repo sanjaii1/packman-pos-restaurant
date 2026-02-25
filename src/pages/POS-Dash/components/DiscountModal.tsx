@@ -30,7 +30,6 @@ export default function DiscountModal({ isOpen, onClose, onApply, subtotal, curr
 
     const newTotal = Math.max(0, subtotal - discountAmount);
 
-    // Disable if discount is more than the total
     const isInvalid = type === 'percent' ? parsedValue > 100 : parsedValue > subtotal;
 
     const handleApply = () => {

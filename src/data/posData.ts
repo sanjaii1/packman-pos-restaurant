@@ -7,6 +7,14 @@ import {
     Coffee
 } from 'lucide-react';
 
+export const SERVERS = [
+    { id: 1, name: 'Sarah J.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80' },
+    { id: 2, name: 'Michael T.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80' },
+    { id: 3, name: 'Emma W.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80' },
+];
+
+export const TABLES = ['T-01', 'T-02', 'T-03', 'T-04', 'T-05', 'T-06', 'T-07', 'T-08', 'T-09', 'T-10', 'T-11', 'T-12'];
+
 export const CATEGORIES = [
     { id: 'all', name: 'All', icon: Menu },
     { id: 'burger', name: 'Burger', icon: Hamburger },

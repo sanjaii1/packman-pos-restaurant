@@ -68,7 +68,6 @@ export default function PosRightSidebar({
                 : 'translate-y-0 lg:mr-0 opacity-100 pointer-events-auto'
                 }`}>
 
-                {/* Desktop View */}
                 <div className="hidden lg:flex flex-col h-full w-full">
                     <div className="px-6 py-6 flex items-start justify-between border-b border-gray-50/50">
                         <div>
@@ -189,9 +188,7 @@ export default function PosRightSidebar({
                     </div>
                 </div>
 
-                {/* Mobile Footer View */}
                 <div className="lg:hidden flex flex-col bg-white">
-                    {/* Expanded Cart View */}
                     <div className={`flex flex-col overflow-hidden transition-all duration-300 ease-in-out bg-[#fafafa] ${isMobileCartOpen ? 'max-h-[75vh] opacity-100 border-b border-gray-100' : 'max-h-0 opacity-0'}`}>
                         <div className="p-4 flex justify-between items-center border-b border-gray-100/80 bg-white">
                             <h2 className="text-[18px] font-extrabold text-gray-900">Your Order</h2>
@@ -280,7 +277,6 @@ export default function PosRightSidebar({
                         </div>
                     </div>
 
-                    {/* Bottom Bar */}
                     <div className="flex items-center justify-between px-4 py-4 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] relative z-10">
                         <div className="flex flex-col cursor-pointer bg-white/50 p-1 -m-1 rounded-lg" onClick={() => setIsMobileCartOpen(!isMobileCartOpen)}>
                             <span className="text-[13px] font-bold text-gray-500 mb-0.5">Total ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>

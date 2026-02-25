@@ -29,7 +29,6 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, total }: Paym
         setMethod(selectedMethod);
         setStep('processing');
 
-        // Mock processing delay
         setTimeout(() => {
             setStep('success');
         }, 1500);

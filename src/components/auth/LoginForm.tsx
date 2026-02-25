@@ -20,7 +20,7 @@ export default function LoginForm() {
         if (activeField === 'employeeId') {
             setEmployeeId(prev => prev + num.toString());
         } else {
-            if (pinCode.length < 8) { // basic limit
+            if (pinCode.length < 8) { 
                 setPinCode(prev => prev + num.toString());
             }
         }

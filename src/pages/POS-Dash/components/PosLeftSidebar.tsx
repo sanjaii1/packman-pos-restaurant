@@ -1,20 +1,12 @@
 import { useState } from 'react';
 import { LogOut, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { CATEGORIES } from '../../../data/posData';
+import { CATEGORIES, SERVERS, TABLES } from '../../../data/posData';
 
 interface PosLeftSidebarProps {
     activeCategory: string;
     setActiveCategory: (id: string) => void;
 }
-
-const SERVERS = [
-    { id: 1, name: 'Sarah J.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80' },
-    { id: 2, name: 'Michael T.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80' },
-    { id: 3, name: 'Emma W.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80' },
-];
-
-const TABLES = ['T-01', 'T-02', 'T-03', 'T-04', 'T-05', 'T-06', 'T-07', 'T-08', 'T-09', 'T-10', 'T-11', 'T-12'];
 
 export default function PosLeftSidebar({ activeCategory, setActiveCategory }: PosLeftSidebarProps) {
     const navigate = useNavigate();
@@ -25,7 +17,7 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
 
     return (
         <aside className="w-[280px] bg-white border-r border-gray-100 hidden md:flex flex-col z-10 flex-shrink-0">
-            {/* User Profile Info */}
+
             <div className="relative p-8 pb-4">
                 <div className="flex items-center gap-4 w-full text-left p-2 -m-2">
                     <button
@@ -60,7 +52,6 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                     </div>
                 </div>
 
-                {/* Server Dropdown */}
                 {isServerDropdownOpen && (
                     <div className="absolute top-full left-8 right-8 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20">
                         {SERVERS.map((server) => (
@@ -89,7 +80,6 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                     </div>
                 )}
 
-                {/* Table Dropdown */}
                 {isTableDropdownOpen && (
                     <div className="absolute top-full left-8 right-8 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-48 overflow-y-auto">
                         <div className="grid grid-cols-3 gap-1 p-2">
@@ -101,8 +91,8 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                                         setIsTableDropdownOpen(false);
                                     }}
                                     className={`py-2 px-1 text-sm font-semibold rounded-lg transition-colors outline-none cursor-pointer ${selectedTable === table
-                                            ? 'bg-[#ea580c] text-white'
-                                            : 'bg-gray-50 text-gray-700 hover:bg-gray-200'
+                                        ? 'bg-[#ea580c] text-white'
+                                        : 'bg-gray-50 text-gray-700 hover:bg-gray-200'
                                         }`}
                                 >
                                     {table}
@@ -113,7 +103,6 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                 )}
             </div>
 
-            {/* Navigation Menu */}
             <div className="px-6 py-6 flex flex-col gap-2 flex-1">
                 <h4 className="text-[12px] font-bold text-gray-400 tracking-widest uppercase mb-3 pl-2">Menu</h4>
                 {CATEGORIES.map((cat) => {
@@ -134,7 +123,6 @@ export default function PosLeftSidebar({ activeCategory, setActiveCategory }: Po
                 })}
             </div>
 
-            {/* Logout Button */}
             <div className="p-6">
                 <button
                     onClick={() => navigate('/login')}

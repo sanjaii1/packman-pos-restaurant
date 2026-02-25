@@ -1,14 +1,7 @@
-import { Search, SlidersHorizontal, IndianRupee, Check, Bell, ChevronDown } from 'lucide-react';
-import { PRODUCTS, CATEGORIES } from '../../../data/posData';
+import { Search, SlidersHorizontal, IndianRupee, Check, LogOut, ChevronDown } from 'lucide-react';
+import { PRODUCTS, CATEGORIES, SERVERS, TABLES } from '../../../data/posData';
 import { useState, useRef, useEffect } from 'react';
-
-const SERVERS = [
-    { id: 1, name: 'Sarah J.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80' },
-    { id: 2, name: 'Michael T.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80' },
-    { id: 3, name: 'Emma W.', role: 'Server', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80' },
-];
-
-const TABLES = ['T-01', 'T-02', 'T-03', 'T-04', 'T-05', 'T-06', 'T-07', 'T-08', 'T-09', 'T-10', 'T-11', 'T-12'];
+import { useNavigate } from 'react-router-dom';
 
 interface CategoryData {
     id: string;
@@ -42,6 +35,7 @@ export default function PosMainContent({
     const [selectedServer, setSelectedServer] = useState(SERVERS[0]);
     const [selectedTable, setSelectedTable] = useState('Table 12');
     const filterRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -120,7 +114,6 @@ export default function PosMainContent({
                 </div>
             </header>
 
-            {/* Mobile Header */}
             <header className="md:hidden px-4 pt-4 pb-2 bg-white rounded-b-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] z-10 sticky top-0 flex-shrink-0">
                 <div className="flex items-center justify-between mb-4">
                     <div className="relative z-30">
@@ -152,7 +145,6 @@ export default function PosMainContent({
                             </div>
                         </div>
 
-                        {/* Server Dropdown */}
                         {isServerDropdownOpen && (
                             <div className="absolute top-full left-0 w-[220px] mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20">
                                 {SERVERS.map((server) => (
@@ -181,7 +173,6 @@ export default function PosMainContent({
                             </div>
                         )}
 
-                        {/* Table Dropdown */}
                         {isTableDropdownOpen && (
                             <div className="absolute top-full left-0 w-[240px] mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-48 overflow-y-auto">
                                 <div className="grid grid-cols-3 gap-1 p-2">
@@ -204,9 +195,11 @@ export default function PosMainContent({
                             </div>
                         )}
                     </div>
-                    <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 relative">
-                        <Bell size={18} className="text-gray-600" />
-                        <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 relative hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-colors group"
+                    >
+                        <LogOut size={18} className="text-gray-600 group-hover:text-red-500 transition-colors" />
                     </button>
                 </div>
 
@@ -228,12 +221,35 @@ export default function PosMainContent({
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
-                    <button
-                        onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        className="h-[44px] w-[44px] bg-[#fff1e7] text-[#ea580c] rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 transition-transform active:scale-95"
-                    >
-                        <SlidersHorizontal size={18} strokeWidth={2.5} />
-                    </button>
+                    <div className="relative" ref={filterRef}>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsFilterOpen(!isFilterOpen);
+                            }}
+                            className={`h-[44px] w-[44px] rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 transition-all active:scale-95 ${isFilterOpen ? 'bg-[#ea580c] text-white shadow-[0_4px_12px_-4px_rgba(234,88,12,0.4)]' : 'bg-[#fff1e7] text-[#ea580c]'}`}
+                        >
+                            <SlidersHorizontal size={18} strokeWidth={2.5} />
+                        </button>
+
+                        {isFilterOpen && (
+                            <div className="absolute right-0 top-[52px] w-[200px] bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                                    <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">Sort by</p>
+                                </div>
+                                {sortOptions.map(option => (
+                                    <button
+                                        key={option.id}
+                                        onClick={() => { setSortBy(option.id); setIsFilterOpen(false); }}
+                                        className="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 hover:text-[#f97316] flex items-center justify-between transition-colors"
+                                    >
+                                        {option.label}
+                                        {sortBy === option.id && <Check size={14} className="text-[#f97316]" />}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4">
